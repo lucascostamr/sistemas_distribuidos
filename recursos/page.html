@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface de Requisições HTTP</title>
+</head>
+<body>
+    <h1>Fazer Requisição HTTP</h1>
+    <form action="/send_request" method="POST">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="metodo">Escolha o Método HTTP:</label>
+        <select id="metodo" name="metodo">
+            <option value="GET">GET</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+            <option value="PATCH">PATCH</option>
+            <option value="OPTIONS">OPTIONS</option>
+        </select><br><br>
+
+        <input type="submit" value="Enviar Requisição">
+    </form>
+</body>
+</html>

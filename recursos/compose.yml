@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    volumes:
+      - .:/home/user/app
+    tty: true
+    ports:
+      - 5000:5000

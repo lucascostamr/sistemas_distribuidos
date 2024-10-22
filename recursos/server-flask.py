@@ -44,7 +44,7 @@ def update_record():
     with open('data.txt', 'w') as f:
         f.write(json.dumps(new_records, indent=2))
     return jsonify(record)
-    
+
 @app.route('/', methods=['DELETE'])
 def delte_record():
     record = json.loads(request.data)
@@ -60,4 +60,23 @@ def delte_record():
         f.write(json.dumps(new_records, indent=2))
     return jsonify(record)
 
-app.run(debug=True)
+@app.route('/', methods=['PATCH'])
+def patch_record():
+    record = json.loads(request.data)
+    new_records = []
+    with open('data.txt', 'r') as f:
+        data = f.read()
+        records = json.loads(data)
+        for r in records:
+            if r['name'] == record['name']:
+                r['email'] = record['email']
+            new_records.append(r)
+    with open('data.txt', 'w') as f:
+        f.write(json.dumps(new_records, indent=2))
+    return jsonify(record)
+
+@app.route('/', methods=['OPTIONS'])
+def options_record():
+    return jsonify({"message": "OPTIONS request received"})
+
+app.run(host='0.0.0.0', port=5000, debug=True)
