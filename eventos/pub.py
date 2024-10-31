@@ -7,7 +7,7 @@ broker="mqtt"
 #port
 port=1883
 
-def on_publish(client, userdata, result):
+def on_publish(client, userdata, flags, reason_code, properties):
     print("Dispositivo 1: Dados Publicados.")
     pass
 
