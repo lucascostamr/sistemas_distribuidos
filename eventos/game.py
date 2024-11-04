@@ -1,108 +1,98 @@
-import turtle
 import time
+from turtle import Screen, Turtle
 
 from MqttService import MqttService
+from utils import random_color
+
 
 class Game:
     def __init__(self):
-        self.mqttService = MqttService()
-        self.ball_list = []
         self.currentPlayer = None
+        self.screen_width = None
+        self.screen_height = None
 
-        self.create_screen()
+        self.delay = 0.01
+        self.mqttService = MqttService()
+        self.player_list = {}
+        self.screen = self.create_screen()
+        self.bind_keys()
+        self.create_player()
 
-    def create_screen(self):
-        screen = turtle.Screen()
+    def create_screen(self) -> Screen:
+        screen = Screen()
         screen.title("Move Game by @Garrocho")
         screen.bgcolor("green")
         screen.setup(width=1.0, height=1.0, startx=None, starty=None)
-        screen.tracer(0) # Turns off the screen updates
-        self.screen = screen
+        screen.tracer(0)
 
-def on_connect(client, userdata, flags, reason_code, properties):
-    print("Connected with result code " + str(reason_code))
+        self.screen_width = screen.window_width() // 2
+        self.screen_height = screen.window_height() //2
 
-    ip = "123"
-    color = "red"
+        return screen
 
-    ball = turtle.Turtle()
-    ball.speed(0)
-    ball.shape("circle")
-    ball.color("red")
-    ball.penup()
-    ball.goto(0,0)
-    ball.direction = "stop"
+    def create_player(self):
+        player = Turtle()
+        player.speed(0)
+        player.shape("turtle")
+        player.color(random_color())
+        player.penup()
+        player.goto(0,0)
+        player.direction = "stop"
 
-    player = {
-        ip: {
-            "ball": ball,
-            "color": color
-        }
-    }
+        self.currentPlayer = player
 
-    ball_list.append(player)
+    def go_up(self):
+        self.currentPlayer.direction = "up"
 
-    client.subscribe("/data")
+    def go_down(self):
+        self.currentPlayer.direction = "down"
 
-mqttService.setOnConnectHandler(on_connect)
-mqttService.connect()
+    def go_left(self):
+        self.currentPlayer.direction = "left"
 
-print(ball_list)
+    def go_right(self):
+        self.currentPlayer.direction = "right"
 
+    def close(self):
+        self.screen.bye()
 
-# gamer 1
-for key, value in ball_list:
-    if key == "123":
-        currentPlayer = value.ball
-mqttService.listen("/data")
-# Functions
-def go_up():
-    currentPlayer.direction = "up"
+    def move(self):
+        if self.currentPlayer.direction == "up":
+            y = self.currentPlayer.ycor()
+            if y < self.screen_height - 10:
+                self.currentPlayer.sety(y + 2)
 
-def go_down():
-    currentPlayer.direction = "down"
+        if self.currentPlayer.direction == "down":
+            y = self.currentPlayer.ycor()
+            if y > -self.screen_height + 10:
+                self.currentPlayer.sety(y - 2)
 
-def go_left():
-    currentPlayer.direction = "left"
+        if self.currentPlayer.direction == "left":
+            x = self.currentPlayer.xcor()
+            if x > -self.screen_width + 10:
+                self.currentPlayer.setx(x - 2)
 
-def go_right():
-    currentPlayer.direction = "right"
+        if self.currentPlayer.direction == "right":
+            x = self.currentPlayer.xcor()
+            if x < self.screen_width - 10:
+                self.currentPlayer.setx(x + 2)
 
-def close():
-    wn.bye()
+    def bind_keys(self):
+        self.screen.listen()
+        self.screen.onkeypress(self.go_up, "w")
+        self.screen.onkeypress(self.go_down, "s")
+        self.screen.onkeypress(self.go_left, "a")
+        self.screen.onkeypress(self.go_right, "d")
+        self.screen.onkeypress(self.close, "Escape")
 
-def move():
-    if currentPlayer.direction == "up":
-        y = currentPlayer.ycor()
-        currentPlayer.sety(y + 2)
+    def start(self):
+        while True:
+            self.screen.update()
+            self.move()
+            time.sleep(self.delay)
 
-    if currentPlayer.direction == "down":
-        y = currentPlayer.ycor()
-        currentPlayer.sety(y - 2)
+        self.screen.mainloop()
 
-    if currentPlayer.direction == "left":
-        x = currentPlayer.xcor()
-        currentPlayer.setx(x - 2)
-
-    if currentPlayer.direction == "right":
-        x = currentPlayer.xcor()
-        currentPlayer.setx(x + 2)
-
-# Keyboard bindings
-wn.listen()
-wn.onkeypress(go_up, "w")
-wn.onkeypress(go_down, "s")
-wn.onkeypress(go_left, "a")
-wn.onkeypress(go_right, "d")
-wn.onkeypress(close, "Escape")
-
-
-# Main game loop
-while True:
-
-    wn.update()
-    move()
-    time.sleep(delay)
-
-
-wn.mainloop()
+if __name__ == "__main__":
+    game = Game()
+    game.start()
