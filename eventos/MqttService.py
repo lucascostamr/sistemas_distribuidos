@@ -4,10 +4,11 @@ import paho.mqtt.client as mqtt
 
 
 class  MqttService:
-    def __init__(self):
+    def __init__(self, topic: str):
         self.broker = "mqtt"
         self.port = 1883
         self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+        self.topic = topic
 
     def connect(self) -> None:
         self.client.connect(self.broker, self.port)
@@ -21,9 +22,9 @@ class  MqttService:
     def setOnMessageHandler(self, onMessageHandler: Callable):
         self.client.on_message = onMessageHandler
 
-    def publish(self, topic: str, message: str):
-        self.client.publish(topic, message)
+    def publish(self, message: str):
+        self.client.publish(self.topic, message)
 
-    def listen(self, topic: str):
-        self.client.subscribe(topic)
+    def listen(self):
+        self.client.subscribe(self.topic)
         self.client.loop_forever()
