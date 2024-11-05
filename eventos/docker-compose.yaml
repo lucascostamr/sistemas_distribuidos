@@ -5,6 +5,9 @@ services:
       - .:/home/user/app
       - /tmp/.X11-unix:/tmp/.X11-unix
     tty: true
+    deploy:
+      mode: replicated
+      replicas: 3
     depends_on:
       - mqtt
   mqtt:

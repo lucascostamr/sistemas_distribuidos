@@ -162,7 +162,6 @@ class Game:
 
             self.mqttService.publish(message=message)
 
-            client.subscribe(self.topic)
 
         def on_message(client, userdata, msg):
             player = loads(msg.payload.decode())
