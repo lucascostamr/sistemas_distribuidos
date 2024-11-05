@@ -10,6 +10,7 @@ from utils import random_color
 
 class Game:
     player_dict = {}
+    update_interval = 0.1
 
     def __init__(self):
         self.current_player = None
@@ -18,7 +19,8 @@ class Game:
         self.current_player_id = None
         self.topic = "/data"
 
-        self.delay = 0.01
+        self.last_update_time = 0
+        self.delay = 0.005
         self.mqttService = MqttService(self.topic)
         self.screen = self.create_screen()
         self.bind_keys()
@@ -184,7 +186,12 @@ class Game:
         Thread(target=self.mqttService.listen, daemon=True).start()
 
         while True:
-            self.publish_players()
+            current_time = time.time()
+
+            if current_time - self.last_update_time >= Game.update_interval:
+                self.last_update_time = current_time
+                self.publish_players()
+
             self.generate_players()
             self.screen.update()
             self.move()
