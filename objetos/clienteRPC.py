@@ -1,8 +1,16 @@
+from uuid import uuid1
 import rpyc
 
-proxy = rpyc.connect('localhost', 18861, config={'allow_public_attrs': True})
+proxy = rpyc.connect('localhost', 18861)
 
-objeto_arquivo = open('arquivo_teste.txt')
+username = input("Digite seu nome: ")
 
-n_linhas = proxy.root.contador_linha(objeto_arquivo)
-print('Numero de linhas no arquivo: ', n_linhas)
+new_user = {
+    "id": uuid1(),
+    "name": username
+}
+
+proxy.root.user_list.append(new_user)
+
+lista = proxy.root.get_user_list()
+print(lista)

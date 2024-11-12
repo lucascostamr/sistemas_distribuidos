@@ -1,10 +1,14 @@
-import rpyc
-
-class MeuServico(rpyc.Service):
-    def exposed_contador_linha(self, objeto_arquivo):
-        n_linhas = len(objeto_arquivo.readlines())
-        return n_linhas
-
 from rpyc.utils.server import ThreadedServer
-t = ThreadedServer(MeuServico, port=18861)
+from rpyc import Service
+
+class ChatService(Service):
+    exposed_user_list: list[str] = []
+
+    def exposed_get_user_list(self):
+        return ChatService.exposed_user_list
+
+t = ThreadedServer(ChatService, port=18861, protocol_config={
+    'allow_public_attrs': True,
+})
+
 t.start()
