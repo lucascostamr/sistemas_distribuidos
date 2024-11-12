@@ -1,16 +1,8 @@
-from uuid import uuid1
 import rpyc
 
 proxy = rpyc.connect('localhost', 18861)
 
 username = input("Digite seu nome: ")
-
-new_user = {
-    "id": uuid1(),
-    "name": username
-}
-
-proxy.root.user_list.append(new_user)
-
+proxy.root.enter_room(username)
 lista = proxy.root.get_user_list()
 print(lista)
