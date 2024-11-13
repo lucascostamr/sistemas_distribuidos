@@ -31,6 +31,9 @@ class ChatService(Service):
         user = ChatService.exposed_user_dict[username]
         ChatService.exposed_room.append(user)
 
+    def exposed_leave_room(self, username: str) -> None:
+        del ChatService.exposed_user_dict[username]
+
     def exposed_get_user_list(self) -> list[User]:
         return list(ChatService.exposed_user_dict.values())
 
