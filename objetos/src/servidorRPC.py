@@ -30,6 +30,7 @@ class ChatService(Service):
             if user.conn == conn:
                 self.exposed_room.remove(user)
                 self._notify(f"{user.name} acabou de deixar a sala.")
+                print(f"{user.name} saiu!")
                 return
 
     def exposed_register_user(self, username: str) -> None:
